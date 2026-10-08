@@ -70,6 +70,7 @@ type Attached = {
   matches: (command: string, event: KeyboardEvent) => boolean
   servers: Accessor<readonly string[]>
   server: (id: string) => ServerRef | undefined
+  open: (input: { server: string; id: string }) => void
 }
 
 /**
@@ -286,6 +287,7 @@ export function createHostApis() {
     sessions: () => ({
       list: () => current()?.sessions() ?? [],
       current: () => current()?.current(),
+      open: (input) => write((value) => value.open(input)),
     }),
     screen: () => ({
       current: () => {
@@ -801,6 +803,14 @@ export function createExtensionAttachment(apis: HostApis) {
     matches: command.matches,
     servers: () => global.servers.list().map(ServerConnection.key),
     server,
+    open(input) {
+      if (!connection(input.server)) return
+      const tab = tabs.addSessionTab({ server: ServerConnection.Key.make(input.server), sessionId: input.id })
+
+      if (tab.type !== "session") return
+      tabs.rememberSessionRoute(tab, input.id)
+      tabs.select(tab)
+    },
     // SAFETY: an extension names a page it contributed through `SettingsPage`, which settings lists as an extension tab.
     settings: (page) => surface.open(page as Parameters<typeof surface.open>[0]),
     layout: {

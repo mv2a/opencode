@@ -100,7 +100,7 @@ function fakeApis(storage: (extension: string) => Storage): HostApiFactories {
     servers: () => servers,
     workspaces: () => workspaces,
     desktop: () => undefined,
-    sessions: () => ({ list: () => [], current: () => undefined }),
+    sessions: () => ({ list: () => [], current: () => undefined, open: () => undefined }),
     screen: () => ({ current: () => undefined }),
     layout: () => layout,
     storage,
@@ -349,6 +349,7 @@ function standIn(overrides: Partial<Interface>): Interface {
     matches: () => false,
     servers: () => ["local"],
     server: () => undefined,
+    open: () => undefined,
     ...overrides,
   }
 }

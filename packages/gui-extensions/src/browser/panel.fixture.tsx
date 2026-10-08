@@ -834,7 +834,7 @@ export function mountBrowserRegion(input: RegionHost) {
       desktop: () => ({ zoom: () => 1 }),
       embeds: () => ({ View: () => null, capture: async () => undefined }),
       system: () => ({ copy: async () => undefined, openExternal() {}, save: async () => false }),
-      sessions: () => ({ list: () => refs, current: view }),
+      sessions: () => ({ list: () => refs, current: view, open: () => undefined }),
       screen: () => ({ current: () => screen }),
       layout,
       storage,
