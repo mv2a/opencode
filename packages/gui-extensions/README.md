@@ -700,6 +700,7 @@ export const builtins = Extension.compose(
   { ...ssh, renderer: eager(sshRenderer) },
   { ...wsl, renderer: eager(wslRenderer) },
   { ...microsoftOffice, renderer: eager(microsoftOfficeRenderer) },
+  { ...sessions, renderer: eager(sessionsRenderer) },
 )
 ```
 
