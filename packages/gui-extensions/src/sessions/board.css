@@ -1,0 +1,144 @@
+.sessions-board-body {
+  gap: 12px;
+  min-height: 0;
+  padding: 0 16px 16px;
+}
+
+.sessions-board-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.sessions-board-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--v2-text-text-muted);
+  font-size: 12px;
+}
+
+.sessions-board-projects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sessions-board-chip {
+  padding: 2px 10px;
+  border: 1px solid var(--v2-border-border-muted);
+  border-radius: 999px;
+  color: var(--v2-text-text-muted);
+  font-size: 12px;
+
+  &:hover {
+    background: var(--v2-overlay-simple-overlay-hover);
+  }
+
+  &[aria-pressed="true"] {
+    border-color: var(--v2-border-border-strong);
+    color: var(--v2-text-text-base);
+    background: var(--v2-background-bg-layer-02);
+  }
+}
+
+.sessions-board-groups {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.sessions-board-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sessions-board-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 4px;
+  color: var(--v2-text-text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sessions-board-count {
+  color: var(--v2-text-text-faint);
+}
+
+.sessions-board-row {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 32px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--v2-text-text-base);
+  font-size: 13px;
+  text-align: start;
+
+  &:hover {
+    background: var(--v2-overlay-simple-overlay-hover);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--v2-border-border-focus);
+  }
+}
+
+.sessions-board-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--v2-icon-icon-faint);
+}
+
+.sessions-board-row[data-state="input"] .sessions-board-dot {
+  background: var(--v2-state-fg-warning);
+}
+
+.sessions-board-row[data-state="working"] .sessions-board-dot {
+  background: var(--v2-state-fg-success);
+  animation: sessions-board-pulse 1.4s ease-in-out infinite;
+}
+
+.sessions-board-row[data-state="review"] .sessions-board-dot {
+  background: var(--v2-border-border-focus);
+}
+
+.sessions-board-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sessions-board-meta {
+  color: var(--v2-text-text-faint);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.sessions-board-empty {
+  padding: 24px 0;
+  color: var(--v2-text-text-muted);
+  text-align: center;
+}
+
+@keyframes sessions-board-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sessions-board-row[data-state="working"] .sessions-board-dot {
+    animation: none;
+  }
+}

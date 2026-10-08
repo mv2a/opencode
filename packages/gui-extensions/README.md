@@ -640,6 +640,7 @@ export const builtins = Extension.compose(
   { ...updater, renderer: eager(updaterRenderer) },
   { ...ssh, renderer: eager(sshRenderer) },
   { ...wsl, renderer: eager(wslRenderer) },
+  { ...sessions, renderer: eager(sessionsRenderer) },
 )
 ```
 
