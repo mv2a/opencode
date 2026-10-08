@@ -85,7 +85,7 @@ const router: Router = { routing: () => false, path: () => "/" }
 
 const keybinds: Keybinds = { keybind: () => [], keys: (bind) => bind.split("+"), matches: () => false }
 
-const servers: Servers = { list: () => [] }
+const servers: Servers = { list: () => [], get: () => undefined }
 
 const workspaces: Workspaces = { on: () => () => undefined }
 
@@ -100,7 +100,7 @@ function fakeApis(storage: (extension: string) => Storage): HostApiFactories {
     servers: () => servers,
     workspaces: () => workspaces,
     desktop: () => undefined,
-    sessions: () => ({ list: () => [], current: () => undefined }),
+    sessions: () => ({ list: () => [], current: () => undefined, open: () => undefined }),
     screen: () => ({ current: () => undefined }),
     layout: () => layout,
     storage,
@@ -348,6 +348,8 @@ function standIn(overrides: Partial<Interface>): Interface {
     keybind: () => [],
     matches: () => false,
     servers: () => ["local"],
+    server: () => undefined,
+    open: () => undefined,
     ...overrides,
   }
 }

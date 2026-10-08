@@ -606,6 +606,24 @@ export interface Sessions {
    * Reactive.
    */
   current(): MountedSession | undefined
+  /**
+   * Opens a session of any server in its shell tab, adding the tab when none holds it, and selects it. The session
+   * does not need an open tab or a project the sidebar lists. Before the app interface mounts the open waits and
+   * applies once it mounts, in call order with layout writes. Does nothing when the server is not listed.
+   *
+   * @param input - The session to open.
+   *
+   * @example
+   * ```ts
+   * ctx.sessions.open({ server: server.id, id: session.id })
+   * ```
+   */
+  open(input: {
+    /** The server's `ServerRef.id`. */
+    readonly server: string
+    /** The session's id on that server. */
+    readonly id: string
+  }): void
 }
 
 /**
@@ -992,6 +1010,18 @@ export interface Keybinds {
 export interface Servers {
   /** Ids of the servers the app lists (`ServerRef.id`). Reactive. */
   list(): readonly string[]
+  /**
+   * The live ref of a listed server, the same object for the same id. Undefined for an id the app does not list, and
+   * before the app interface mounts. Reactive.
+   *
+   * @param id - A `ServerRef.id` from `list()`.
+   *
+   * @example
+   * ```ts
+   * const refs = () => ctx.servers.list().flatMap((id) => ctx.servers.get(id) ?? [])
+   * ```
+   */
+  get(id: string): ServerRef | undefined
 }
 
 /** Workspace lifecycle events. */
