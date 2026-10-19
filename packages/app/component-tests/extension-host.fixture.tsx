@@ -399,7 +399,14 @@ export function mountSessionRegion(input: { definitions: readonly Definition[]; 
   const [routed, setRouted] = createSignal(true)
 
   const route = {
-    composer: { attach: () => void attached.push(view().id), update() {}, detach() {} },
+    composer: {
+      attach: () => void attached.push(view().id),
+      update() {},
+      detach() {},
+      text: () => "",
+      insert() {},
+      focus() {},
+    },
   }
 
   // SAFETY: the test's extension reads only `composer.attach` of the screen.

@@ -562,6 +562,16 @@ export interface SlotMap {
     /** The routed session; a new object when another session is routed. */
     readonly session: MountedSession
   }
+  /**
+   * The strip above the routed session's composer, inside the composer dock. Hidden with the composer: on a child
+   * session, and while a permission or question request replaces it.
+   */
+  readonly "session.composer.above": {
+    /** The owning session screen; always present. */
+    readonly screen: SessionScreen
+    /** The routed session; a new object when another session is routed. */
+    readonly session: MountedSession
+  }
   /** The side region's inner sidebar, shown while it is open. */
   readonly "session.panel.sidebar": {
     /** The owning session screen; always present. */

@@ -522,6 +522,30 @@ export interface Composer {
    * @param id - The part's `commentID`.
    */
   detach(id: string): void
+  /** The plain text of the routed session's draft, text parts only. Untracked. */
+  text(): string
+  /**
+   * Puts text in the routed session's draft. Never sends it.
+   *
+   * @param text - The text to put in.
+   * @param options - How to put it in.
+   *
+   * @example
+   * ```ts
+   * input.screen.composer.insert("Add tests for the parser", { mode: "append", focus: true })
+   * ```
+   */
+  insert(
+    text: string,
+    options?: {
+      /** `replace` (the default) swaps the draft for the text; `append` adds it after the draft, on a new line. */
+      readonly mode?: "replace" | "append"
+      /** Focuses the composer, caret at the end. */
+      readonly focus?: boolean
+    },
+  ): void
+  /** Focuses the composer, caret at the end. Does nothing while the composer is hidden. */
+  focus(): void
 }
 
 /** Work the session moved to the background. */

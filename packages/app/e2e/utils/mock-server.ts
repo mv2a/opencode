@@ -134,6 +134,11 @@ export interface MockServerConfig {
   onPrompt?: (input: { sessionID: string; body: Schema.JsonObject }) => void
   onCompact?: (input: { sessionID: string; body: Schema.JsonObject }) => void
   generate?: (input: { sessionID: string; prompt: string }) => { text: string } | Promise<{ text: string }>
+  // Answers `POST /api/experimental/generate` (stateless `generate.text`); defaults to a reply with no follow-ups.
+  generateText?: (input: {
+    prompt: string
+    model?: { id: string; providerID: string; variant?: string } | null
+  }) => { text: string } | Promise<{ text: string }>
   onInboxChange?: (input: { sessionID: string; inboxID: string; action: "cancel" | "steer" | "queue" }) => void
   // Serves `/api/pty*` and mock PTY WebSockets. Created IDs are the first unused `${prefix}<n>` (prefix must start with "pty").
   // `directory` is the owning workspace (Location); `cwd` is the reported working directory (default: `directory`).
@@ -1272,6 +1277,12 @@ function mockHandlers(
               },
             }
           }),
+        generateText: (ctx) =>
+          Effect.promise(async () => ({
+            data: (await config.generateText?.({ prompt: ctx.payload.prompt, model: ctx.payload.model })) ?? {
+              text: '{"follow_ups": []}',
+            },
+          })),
         sessionGenerate: (ctx) =>
           Effect.promise(async () => ({
             data: (await config.generate?.({ sessionID: ctx.params.sessionID, prompt: ctx.payload.prompt })) ?? {

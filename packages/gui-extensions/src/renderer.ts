@@ -25,6 +25,8 @@ import wsl from "./wsl"
 import wslRenderer from "./wsl/renderer"
 import microsoftOffice from "./microsoft-office"
 import microsoftOfficeRenderer from "./microsoft-office/renderer"
+import followups from "./followups"
+import followupsRenderer from "./followups/renderer"
 import sessions from "./sessions"
 import sessionsRenderer from "./sessions/renderer"
 
@@ -52,4 +54,5 @@ export const builtins = Extension.compose(
   { ...wsl, renderer: eager(wslRenderer) },
   { ...microsoftOffice, renderer: eager(microsoftOfficeRenderer) },
   { ...sessions, renderer: eager(sessionsRenderer) },
+  { ...followups, renderer: eager(followupsRenderer) },
 )

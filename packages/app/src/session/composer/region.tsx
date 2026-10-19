@@ -4,12 +4,15 @@ import { useDialog } from "@opencode/ui/context/dialog"
 import { isScrollKeyTarget, scrollKey, scrollKeyOwner } from "@opencode/ui/scroll-view"
 import { makeEventListener } from "@solid-primitives/event-listener"
 import { useNavigate } from "@solidjs/router"
-import { createEffect, createMemo, on, onMount, Show, type Accessor } from "solid-js"
+import { createEffect, createMemo, on, onCleanup, onMount, Show, type Accessor } from "solid-js"
+import type { MountedSession, SessionScreen } from "@opencode/gui-extensions/sdk"
 import { Composer } from "@/composer/composer"
 import { useComposerState } from "@/composer/persistence"
 import { createComposerControls } from "@/composer/selection"
 import { setCursorPosition } from "@/composer/editor/dom"
 import { promptLength } from "@/composer/prompt-parts"
+import { useExtensionAttachment } from "@/runtime/extension/host-apis"
+import { ExtensionSlot } from "@/runtime/extension/render"
 import { useCommand } from "@/shell/commands/command"
 import { useLanguage } from "@/runtime/i18n/language"
 import { useData } from "@/runtime/server/current"
@@ -183,6 +186,18 @@ export function createActiveSessionRegion(input: {
 
   onMount(() => makeEventListener(document, "keydown", handleKeyDown))
 
+  // Extensions focus the composer through `Composer.focus`; the caret goes to the end of the draft.
+  onCleanup(
+    useExtensionAttachment().focuser(() => {
+      if (state.blocked() || input.session.data.isChild() || !promptRef) return
+      const element = promptRef
+      requestAnimationFrame(() => {
+        element.focus()
+        setCursorPosition(element, promptLength(prompt.current()))
+      })
+    }),
+  )
+
   const revert = createSessionRevert({
     session: input.session,
     setActiveMessage: input.timeline.actions.setActiveMessage,
@@ -293,6 +308,10 @@ export function ActiveSessionComposerRegion(props: {
   session: SessionModel
   model: SessionComposerController
   suggestionBoundary: () => HTMLElement | undefined
+  /** The routed session, for extensions rendering above the composer. */
+  view: Accessor<MountedSession>
+  /** The owning session screen, for extensions rendering above the composer. */
+  screen: SessionScreen
 }) {
   const location = useWorkspaceLocation()
 
@@ -315,6 +334,17 @@ export function ActiveSessionComposerRegion(props: {
           keyed
           fallback={
             <div class="relative">
+              <ExtensionSlot
+                at="session.composer.above"
+                input={{
+                  get session() {
+                    return props.view()
+                  },
+                  get screen() {
+                    return props.screen
+                  },
+                }}
+              />
               <SessionQueuePanel queue={props.model.queue} />
               <div class="relative z-10">
                 <Composer

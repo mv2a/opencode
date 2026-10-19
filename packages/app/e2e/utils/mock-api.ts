@@ -370,6 +370,19 @@ const Group = HttpApiGroup.make("mock")
     }),
   )
   .add(
+    HttpApiEndpoint.post("generateText", "/api/experimental/generate", {
+      payload: Schema.Struct({
+        prompt: Schema.String,
+        model: Schema.optional(
+          Schema.NullOr(
+            Schema.Struct({ id: Schema.String, providerID: Schema.String, variant: Schema.optional(Schema.String) }),
+          ),
+        ),
+      }),
+      success: Json,
+    }),
+  )
+  .add(
     HttpApiEndpoint.post("sessionGenerate", "/api/session/:sessionID/generate", {
       params: SessionParams,
       payload: Schema.Struct({ prompt: Schema.String }),

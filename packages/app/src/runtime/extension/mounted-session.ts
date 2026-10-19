@@ -23,6 +23,8 @@ import type {
 } from "@opencode/gui-extensions/sdk"
 import { useComments } from "@/composer/comments"
 import { useComposerState } from "@/composer/persistence"
+import { appendPrompt, promptLength } from "@/composer/prompt-parts"
+import type { Prompt } from "@/composer/state"
 import { useServer } from "@/runtime/server/current"
 import { ServerConnection, serverName } from "@/runtime/server/registry"
 import { sessionInWorkspace, sessionProject, type SessionModel } from "@/session/model"
@@ -146,6 +148,24 @@ export function createMountedSession(session: SessionModel) {
     attach: (part) => composer.context.add(part),
     update: (id, patch) => composer.context.updateComment(id, patch),
     detach: (id) => composer.context.removeComment(id),
+    text: () =>
+      untrack(() =>
+        composer
+          .capture()
+          .current()
+          .map((part) => ("content" in part ? part.content : ""))
+          .join(""),
+      ),
+    insert(text, options) {
+      const state = composer.capture()
+      const current = untrack(() => state.current())
+      const part: Prompt = [{ type: "text", content: text, start: 0, end: text.length }]
+      const next = options?.mode === "append" && promptLength(current) > 0 ? appendPrompt(current, part) : part
+      state.set(next, promptLength(next))
+
+      if (options?.focus) attachment.focusComposer()
+    },
+    focus: () => attachment.focusComposer(),
   }
 
   // Each object's memos live in its own root, which ends when the next object replaces it: a kept object stops

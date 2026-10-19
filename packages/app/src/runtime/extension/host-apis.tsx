@@ -701,6 +701,7 @@ export function createExtensionAttachment(apis: HostApis) {
 
   // The routed session's side region, which knows the fallback selection the stored state lacks.
   const [region, setRegion] = createSignal<Region>()
+  const [focuser, setFocuser] = createSignal<() => void>()
   // The session screen's inner sidebar preference, which its side panels share.
   const [sidebar, setSidebar] = createSignal<PanelSidebar>()
 
@@ -886,6 +887,16 @@ export function createExtensionAttachment(apis: HostApis) {
         if (session) selectMobile(session, view)
       },
     },
+    /** The routed composer's focus action; returns its unregister. `Composer.focus` calls it. */
+    focuser(value: () => void) {
+      setFocuser(() => value)
+
+      return () => {
+        if (focuser() === value) setFocuser(undefined)
+      }
+    },
+    /** Focuses the routed composer, if one is registered. */
+    focusComposer: () => focuser()?.(),
     /** A screen started rendering: `Screen.current` returns it only while its session matches the route. */
     screen(value: SessionScreen) {
       setScreen(() => value)
