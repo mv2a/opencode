@@ -20,7 +20,10 @@ const appIDs: Record<string, string> = {
   prod: "ai.opencode.desktop",
 }
 
-// Local renderer/server mode keeps the dev application identity.
-export const APP_NAME = app.isPackaged ? appNames[CHANNEL] : "OpenCode Dev"
+// A fork build is its own app beside the official one; it shares the background service and data.
+const fork = import.meta.env.OPENCODE_DESKTOP_FORK === true
 
-export const APP_ID = app.isPackaged ? appIDs[CHANNEL] : "ai.opencode.desktop.dev"
+// Local renderer/server mode keeps the dev application identity.
+export const APP_NAME = app.isPackaged ? (fork ? "OpenCode Fork" : appNames[CHANNEL]) : "OpenCode Dev"
+
+export const APP_ID = app.isPackaged ? (fork ? "ai.opencode.desktop.fork" : appIDs[CHANNEL]) : "ai.opencode.desktop.dev"

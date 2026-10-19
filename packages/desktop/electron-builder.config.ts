@@ -261,4 +261,20 @@ export function getConfig() {
   }
 }
 
-export default getConfig()
+// Fork builds (OPENCODE_DESKTOP_FORK=1): a separate, locally ad-hoc signed app beside the official one, with no
+// update feed and no URL scheme, so it can neither replace nor be replaced by the official build.
+function forkConfig(config: Configuration): Configuration {
+  if (process.env.OPENCODE_DESKTOP_FORK !== "1") return config
+
+  return {
+    ...config,
+    appId: "ai.opencode.desktop.fork",
+    productName: "OpenCode Fork",
+    protocols: undefined,
+    publish: null,
+    // Ad-hoc signatures carry no team, so hardened runtime library validation would refuse Electron's own frameworks.
+    mac: { ...config.mac, identity: "-", hardenedRuntime: false, notarize: false, target: ["dir"] },
+  }
+}
+
+export default forkConfig(getConfig())

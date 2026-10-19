@@ -62,6 +62,8 @@ export default defineConfig(({ command }) => {
       define: {
         // Local renderer/server mode still uses the dev application identity and updater policy.
         "import.meta.env.OPENCODE_CHANNEL": JSON.stringify(channel === "local" ? "dev" : channel),
+        // Fork builds (OPENCODE_DESKTOP_FORK=1) install beside the official app and never self-update.
+        "import.meta.env.OPENCODE_DESKTOP_FORK": JSON.stringify(process.env.OPENCODE_DESKTOP_FORK === "1"),
       },
       build: {
         minify: command === "build",

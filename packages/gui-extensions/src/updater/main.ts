@@ -9,7 +9,8 @@ import { make } from "./machine"
 const setup: MainSetup<typeof definition> = async (ctx) => {
   const build = ctx.build
   const lifecycle = ctx.lifecycle
-  const enabled = build.packaged && build.channel !== "dev"
+  // Fork builds would update to the official app, so they never check.
+  const enabled = build.packaged && build.channel !== "dev" && import.meta.env.OPENCODE_DESKTOP_FORK !== true
   // Holds no resources, so it needs no cleanup.
   const context = logContext(ctx.log.write)
   const runPromise = Effect.runPromiseWith(context)
